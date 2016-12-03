@@ -26,18 +26,27 @@ export default class App extends Component {
   }
 
   handleSubmit(e) {
+    let address = e.nativeEvent.text
+
+    fetch(`https://donovan-weather-app.herokuapp.com/forecast/${e.nativeEvent.text}`)
+    .then(res => {
+      res.json()
+      .then(data => {
+        let summary = data.hourly.summary
+        let temp = Math.round(data.currently.temperature).toFixed(0)
+
+        this.setState({
+          address,
+          daily: data.daily,
+          landing: false,
+          summary,
+          temp
+        })
+      })
+    })
+    .catch(err => console.warn('error', err))
     // console.warn(JSON.stringify(e.nativeEvent, null, 2))
     // let {text} = e.nativeEvent
-    let summary = mockData.hourly.summary
-    let temp = Math.round(mockData.currently.temperature).toFixed(0)
-
-    this.setState({
-      address: e.nativeEvent.text,
-      daily: mockData.daily,
-      landing: false,
-      summary,
-      temp
-    })
 
     StatusBar.setBarStyle('dark-content')
   }
