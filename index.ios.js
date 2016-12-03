@@ -26,7 +26,7 @@ export default class rnWeatherApp extends Component {
         </View>
         <App />
         <View style={styles.footer}>
-          <Footer>Powered by Dark Sky</Footer>
+          <Footer />
         </View>
       </View>
     );
