@@ -15,6 +15,7 @@ import {
   Dimensions
 } from 'react-native';
 import App from './src/App'
+import Footer from './src/Footer'
 
 export default class rnWeatherApp extends Component {
   render() {
@@ -25,7 +26,7 @@ export default class rnWeatherApp extends Component {
         </View>
         <App />
         <View style={styles.footer}>
-          <Text style={styles.url}>Powered by Dark Sky</Text>
+          <Footer>Powered by Dark Sky</Footer>
         </View>
       </View>
     );
@@ -43,10 +44,6 @@ const styles = StyleSheet.create({
     width: width,
     borderTopWidth: 1,
     borderTopColor: 'black'
-  },
-  url: {
-    color: 'black',
-    textAlign: 'center'
   },
   statusBar: {
     backgroundColor: 'white',
