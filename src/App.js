@@ -9,8 +9,48 @@ import {
   ScrollView,
   Dimensions
 } from 'react-native'
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete'
 import {Details} from './Details'
 import {mockData} from '../mockData'
+
+const autocompleteStyles = {
+  container: {
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  textInput: {
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'black',
+    marginTop: 0,
+    marginBottom: 0,
+    marginLeft: 0,
+    marginRight: 0,
+    textAlign: 'center'
+  },
+  textInputContainer: {
+    borderRadius: 10,
+    height: 28,
+    textAlign: 'center',
+    width: 180
+  },
+  description: {
+    textAlign: 'left'
+  },
+  listView: {
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 5,
+    width: 180
+  }
+}
+
+const queryDetails = {
+  key: 'AIzaSyDP6MAHzWr4Ky3GLm3YAQsh-qOGevkauTU',
+  language: 'en',
+  types: '(cities)'
+}
 
 export default class App extends Component {
   constructor() {
@@ -25,10 +65,12 @@ export default class App extends Component {
     }
   }
 
-  handleSubmit(e) {
-    let address = e.nativeEvent.text
+  handleSubmit(data) {
+    let address = data.description.split(',')
+    address.pop()
+    address = address.join(',')
 
-    fetch(`https://donovan-weather-app.herokuapp.com/forecast/${e.nativeEvent.text}`)
+    fetch(`https://donovan-weather-app.herokuapp.com/forecast/${address}`)
     .then(res => {
       res.json()
       .then(data => {
@@ -55,11 +97,19 @@ export default class App extends Component {
     return (
       <ScrollView>
         <View style={styles.inputView}>
-          <TextInput
+          {/* <TextInput
             style={styles.input}
             placeholder='City, ST'
             returnKeyType='go'
             onSubmitEditing={this.handleSubmit}
+          /> */}
+          <GooglePlacesAutocomplete
+            styles={autocompleteStyles}
+            placeholder='City, ST'
+            autoFocus={false}
+            query={queryDetails}
+            onPress={this.handleSubmit}
+            renderDescription={row => `${row.terms[0].value}, ${row.terms[1].value}`}
           />
         </View>
         {this.state.landing ? (
