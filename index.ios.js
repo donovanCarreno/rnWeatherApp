@@ -17,21 +17,17 @@ import {
 import App from './src/App'
 import Footer from './src/Footer'
 
-export default class rnWeatherApp extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.statusBar}>
-          <StatusBar barStyle={'dark-content'} />
-        </View>
-        <App />
-        <View style={styles.footer}>
-          <Footer />
-        </View>
-      </View>
-    );
-  }
-}
+const rnWeatherApp = () => (
+  <View style={styles.container}>
+    <View style={styles.statusBar}>
+      <StatusBar barStyle={'dark-content'} />
+    </View>
+    <App />
+    <View style={styles.footer}>
+      <Footer />
+    </View>
+  </View>
+)
 
 const {height, width} = Dimensions.get('window')
 
