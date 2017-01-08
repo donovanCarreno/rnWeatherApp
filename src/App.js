@@ -1,4 +1,7 @@
 import React, {Component} from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import * as actionCreators from './actions/actionCreators'
 import {
   Image,
   StyleSheet,
@@ -7,46 +10,17 @@ import {
   View,
   StatusBar,
   ScrollView,
-  Dimensions
+  Dimensions,
+  ActivityIndicator
 } from 'react-native'
 import {Details} from './Details'
 import {mockData} from '../mockData'
 
-export default class App extends Component {
-  constructor() {
-    super()
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this.state = {
-      address: '',
-      daily: {},
-      landing: true,
-      summary: '',
-      temp: null
-    }
-  }
-
+class App extends Component {
   handleSubmit(e) {
     let address = e.nativeEvent.text
 
-    fetch(`https://donovan-weather-app.herokuapp.com/forecast/${e.nativeEvent.text}`)
-    .then(res => {
-      res.json()
-      .then(data => {
-        let summary = data.hourly.summary
-        let temp = Math.round(data.currently.temperature).toFixed(0)
-
-        this.setState({
-          address,
-          daily: data.daily,
-          landing: false,
-          summary,
-          temp
-        })
-      })
-    })
-    .catch(err => console.warn('error', err))
-    // console.warn(JSON.stringify(e.nativeEvent, null, 2))
-    // let {text} = e.nativeEvent
+    this.props.fetchWeather(address)
 
     StatusBar.setBarStyle('dark-content')
   }
@@ -56,26 +30,55 @@ export default class App extends Component {
       <ScrollView>
         <View style={styles.inputView}>
           <TextInput
+            value={this.props.address}
+            autoCorrect={false}
             style={styles.input}
             placeholder='City, ST'
+            onChangeText={this.props.addressChange}
             returnKeyType='go'
-            onSubmitEditing={this.handleSubmit}
+            onSubmitEditing={this.handleSubmit.bind(this)}
           />
         </View>
-        {this.state.landing ? (
+        <ActivityIndicator
+          animating={this.props.loading}
+          color="black"
+          size="large"
+        />
+        {this.props.landing ? (
           <Image source={require('./landing.jpg')} style={styles.image} />
         ) : (
           <Details
-            address={this.state.address}
-            daily={this.state.daily}
-            summary={this.state.summary}
-            temp={this.state.temp}
+            address={this.props.address}
+            daily={this.props.daily}
+            summary={this.props.summary}
+            temp={this.props.temp}
           />
         )}
       </ScrollView>
     )
   }
 }
+
+const mapStateToProps = state => {
+  console.log('state', state)
+  const { address } = state.address
+  const { landing, daily, summary, temp, loading } = state.weatherData
+
+  return {
+    address,
+    landing,
+    daily,
+    summary,
+    temp,
+    loading
+  }
+}
+
+const mapDispatchToProps = dispatch => (
+  bindActionCreators(actionCreators, dispatch)
+)
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
 
 const {width, height} = Dimensions.get('window')
 

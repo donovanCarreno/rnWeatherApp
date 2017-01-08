@@ -1,10 +1,8 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
+import { Provider } from 'react-redux'
+import { createStore, applyMiddleware } from 'redux'
+import Thunk from 'redux-thunk'
+import reducers from './src/reducers'
 import {
   AppRegistry,
   StyleSheet,
@@ -17,16 +15,20 @@ import {
 import App from './src/App'
 import Footer from './src/Footer'
 
+const store = createStore(reducers, {}, applyMiddleware(Thunk))
+
 const rnWeatherApp = () => (
-  <View style={styles.container}>
-    <View style={styles.statusBar}>
-      <StatusBar barStyle={'dark-content'} />
+  <Provider store={store}>
+    <View style={styles.container}>
+      <View style={styles.statusBar}>
+        <StatusBar barStyle={'dark-content'} />
+      </View>
+      <App />
+      <View style={styles.footer}>
+        <Footer />
+      </View>
     </View>
-    <App />
-    <View style={styles.footer}>
-      <Footer />
-    </View>
-  </View>
+  </Provider>
 )
 
 const {height, width} = Dimensions.get('window')
